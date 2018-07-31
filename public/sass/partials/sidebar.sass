@@ -1,0 +1,40 @@
+.empty-scroll
+  height: 70vh
+  display: block
+  background: transparent
+  z-index: -2
+.sidebar
+  width: 100%
+  min-height: 300px
+  border-top: 1px solid rgba(31,31,31,.8)
+  background-color: white
+  position: absolute
+  z-index: 2
+  .menu-button
+    border: 1px solid rgba(31,31,31,.8)
+    border-radius: 100%
+    position: relative
+    height: 30px
+    width: 30px
+    padding: 3px 5px
+    position: absolute
+    right: calc(50% - 15px)
+    top: -10px
+    background-color: white
+    cursor: pointer
+    .chevron-down
+      margin-top: calc(50% - 7.5px)
+      transform: rotate(180deg)
+      transition: transform 300ms
+      background-image: url('/images/svg/chevron-down.svg')
+      height: 15px
+      width: 18px
+      background-position: center
+      background-repeat: no-repeat
+      background-size: cover
+  &.active
+    .menu-button .chevron-down
+      transform: rotate(0deg)
+  +large-devices
+    width: 300px
+    min-height: 100vh

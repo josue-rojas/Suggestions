@@ -1,0 +1,29 @@
+{
+  "name": "suggestions",
+  "version": "1.0.0",
+  "description": "Using google maps api to make a online bulletin board based on locations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-css": "node-sass-chokidar --include-path ./node_modules ./public/css -o ./public/css",
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules ./public/css -o ./public/css --watch --recursive",
+    "start-js": "node ./index.js",
+    "start": "npm-run-all -p watch-css start-js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josuerojasrojas/Suggestions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josuerojasrojas/Suggestions/issues"
+  },
+  "homepage": "https://github.com/josuerojasrojas/Suggestions#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "pg": "^7.4.3"
+  }
+}

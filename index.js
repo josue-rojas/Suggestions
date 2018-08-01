@@ -16,7 +16,7 @@ const pool = new Pool({
 
 //
 app.get('/', (req, res) => {
-
+  res.render('pages/home');
 })
 
 

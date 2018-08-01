@@ -4,3 +4,10 @@
   min-height: 70vh
   position: fixed
   top: 0
+  .mapboxgl-ctrl-top-right
+    right: auto !important
+    left: calc(50% - 125px)
+  +large-devices
+    min-height: 100vh
+    .mapboxgl-ctrl-top-right
+      display: none

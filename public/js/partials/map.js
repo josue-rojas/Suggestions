@@ -109,7 +109,12 @@ function onUp(e) {
 // -------------------------------
 // events
 userlocation.on('geolocate', (pos)=>{
-  geojson.features[0].geometry.coordinates = [pos.coords.longitude, pos.coords.latitude]
+  geojson.features[0].geometry.coordinates = [pos.coords.longitude, pos.coords.latitude];
+  map.getSource('point').setData(geojson);
+});
+
+geocoder.on('result', (r)=>{
+  geojson.features[0].geometry.coordinates = r.result.geometry.coordinates;
   map.getSource('point').setData(geojson);
 });
 

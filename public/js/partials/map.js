@@ -1,9 +1,39 @@
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2l0aGNoZWVzZXBscyIsImEiOiJjams1cTkybmcwamo5M3FwMm5jMjdzdHl3In0.yI9WNY7aCdeQndyxbU9Amg';
-let map = new mapboxgl.Map({
-container: 'map',
-style: 'mapbox://styles/mapbox/streets-v10',
-hash: true
+
+// -------------------------------
+// map objects initialize
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v9',
+  center: location.hash.length == 0 ? [-73.9395,40.79] : [],
+  zoom: 10,
+  hash: true
 });
+
+const geocoder = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  localGeocoder: coordinatesGeocoder,
+  zoom: 4,
+  placeholder: 'Search',
+});
+
+const userlocation = new mapboxgl.GeolocateControl({
+  positionOptions: {
+    enableHighAccuracy: true
+  },
+  trackUserLocation: true
+});
+
+const geojson = {
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [0,0]
+        }
+    }]
+};
 
 /* given a query in the form "lng, lat" or "lat, lng" returns the matching
  * geographic coordinate(s) as search results in carmen geojson format,
@@ -53,12 +83,98 @@ var coordinatesGeocoder = function (query) {
     return geocodes;
 };
 
-const geocoder = new MapboxGeocoder({
-  accessToken: mapboxgl.accessToken,
-  localGeocoder: coordinatesGeocoder,
-  zoom: 4,
-  placeholder: 'Search'
+// point
+let canvas = map.getCanvasContainer();
+
+function onMove(e) {
+  var coords = e.lngLat;
+
+  // Set a UI indicator for dragging.
+  canvas.style.cursor = 'grabbing';
+
+  // Update the Point feature in `geojson` coordinates
+  // and call setData to the source layer `point` on it.
+  geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
+  map.getSource('point').setData(geojson);
+}
+
+function onUp(e) {
+  var coords = e.lngLat;
+
+  // Unbind mouse/touch events
+  map.off('mousemove', onMove);
+  map.off('touchmove', onMove);
+}
+
+// -------------------------------
+// events
+userlocation.on('geolocate', (pos)=>{
+  geojson.features[0].geometry.coordinates = [pos.coords.longitude, pos.coords.latitude];
+  map.getSource('point').setData(geojson);
+});
+
+geocoder.on('result', (r)=>{
+  geojson.features[0].geometry.coordinates = r.result.geometry.coordinates;
+  map.getSource('point').setData(geojson);
+});
+
+map.on('load', ()=>{
+  geojson['features'][0]['geometry']['coordinates'] = [map.getCenter().lng, map.getCenter().lat];
+
+  // Add a single point to the map
+  map.addSource('point', {
+    "type": "geojson",
+    "data": geojson
+  });
+
+  map.addLayer({
+    "id": "point",
+    "type": "circle",
+    "source": "point",
+    "paint": {
+        "circle-radius": 10,
+        "circle-color": "#3887be"
+    }
+  });
+
+  // When the cursor enters a feature in the point layer, prepare for dragging.
+  map.on('mouseenter', 'point', ()=>{
+    if($('.mapboxgl-user-location-dot.mapboxgl-marker.mapboxgl-marker-anchor-center').length > 0) return;
+
+    map.setPaintProperty('point', 'circle-color', '#3bb2d0');
+    canvas.style.cursor = 'move';
+  });
+
+  map.on('mouseleave', 'point', ()=> {
+    map.setPaintProperty('point', 'circle-color', '#3887be');
+    canvas.style.cursor = '';
+  });
+
+  map.on('mousedown', 'point', (e)=> {
+    // check if uselocation exist
+    if($('.mapboxgl-user-location-dot.mapboxgl-marker.mapboxgl-marker-anchor-center').length > 0) return;
+
+    // Prevent the default map drag behavior.
+    e.preventDefault();
+
+    canvas.style.cursor = 'grab';
+
+    map.on('mousemove', onMove);
+    map.once('mouseup', onUp);
+  });
+
+  map.on('touchstart', 'point', (e)=> {
+      if (e.points.length !== 1) return;
+      if($('.mapboxgl-user-location-dot.mapboxgl-marker.mapboxgl-marker-anchor-center').length > 0) return;
+
+      // Prevent the default map drag behavior.
+      e.preventDefault();
+
+      map.on('touchmove', onMove);
+      map.once('touchend', onUp);
+  });
 });
 
 // this is added with the sidebar (it would be repetive if i add it here, cause the sidebar checks if it is the right one to use)
 // map.addControl(geocoder);
+// map.addControl(userlocation);

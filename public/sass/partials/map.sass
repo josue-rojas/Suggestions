@@ -6,8 +6,19 @@
   top: 0
   .mapboxgl-ctrl-top-right
     right: auto !important
-    left: calc(50% - 125px)
+    left: calc(50% - 145px)
+    width: 290px
+    display: flex
+    justify-content: center
+    align-items: center
+    .mapboxgl-ctrl.mapboxgl-ctrl-group
+      height: 30px
   +large-devices
     min-height: 100vh
+    width: 75%
+    margin-left: 25%
     .mapboxgl-ctrl-top-right
       display: none
+
+.mapboxgl-ctrl-top-right input, .geocoder input
+  font-size: 16px !important

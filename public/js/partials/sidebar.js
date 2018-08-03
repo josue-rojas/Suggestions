@@ -32,19 +32,20 @@ $window.scroll(function() {
 // add or remove geocoder when resized or is small screen
 function addGeocoder(windowWidth){
   if(windowWidth < 992){
-    // console.log('helo', windowWidth)
     $('.mapboxgl-ctrl-top-right').empty();
     map.addControl(geocoder);
+    map.addControl(userlocation);
   }
   else{
     $('.geocoder').empty();
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+    document.getElementById('geocoder').appendChild(userlocation.onAdd(map));
   }
 }
+
 $window.resize(()=>{
   addGeocoder($window.width());
 })
-
 
 // -------------------------------
 // document ready stuff

@@ -4,9 +4,10 @@ $border-color: rgba(31,31,31,.8)
   display: block
   background: transparent
   z-index: -2
+  +large-devices
+    display: none
 .sidebar
   width: 100%
-  // min-height: 300px
   border-top: 1px solid $border-color
   background-color: white
   position: absolute
@@ -57,8 +58,9 @@ $border-color: rgba(31,31,31,.8)
     .geocoder
       display: none
   +large-devices
-    width: 300px
+    width: 25%
     min-height: 100vh
+    border-top: 0
     .menu-button
       display: none
     .main

@@ -1,68 +1,79 @@
 $border-color: rgba(31,31,31,.8)
-.empty-scroll
-  height: 70vh
-  display: block
-  background: transparent
-  z-index: -2
-  +large-devices
-    display: none
-.sidebar
-  width: 100%
-  border-top: 1px solid $border-color
-  background-color: white
-  position: absolute
-  z-index: 2
-  .menu-button
-    border: 1px solid $border-color
-    border-radius: 100%
-    position: relative
-    height: 30px
-    width: 30px
-    padding: 3px 5px
-    position: absolute
-    right: calc(50% - 15px)
-    top: -10px
-    background-color: white
-    cursor: pointer
-    .chevron-down
-      margin-top: calc(50% - 7.5px)
-      transform: rotate(180deg)
-      transition: transform 300ms
-      background-color: $border-color
-      mask: url('/images/svg/chevron-down.svg') no-repeat 50% 50%
-      -webkit-mask: url('/images/svg/chevron-down.svg') no-repeat 50% 50%
-      -webkit-mask-size: cover
-      mask-size: cover
-      height: 15px
-      width: 18px
-      background-position: center
-      background-repeat: no-repeat
-      background-size: cover
-  &.active
-    .menu-button .chevron-down
-      transform: rotate(0deg)
-  .main
-    display: flex
+
+.sidebar-wrapper
+  .empty-scroll
+    height: 70vh
+    display: block
+    background: transparent
+    z-index: -2
+    +large-devices
+      display: none
+  .sidebar
     width: 100%
-    height: 100%
-    min-height: 300px
-    max-height: calc(50vh - 10px)
-    flex-direction: column
-    .content
-      min-height: 10px
-      margin: auto
-      text-align: center
-    .footer
-      display: table
-      margin: 10px auto
-    .geocoder
-      display: none
-  +large-devices
-    width: 25%
-    min-height: 100vh
-    border-top: 0
+    border-top: 1px solid $border-color
+    background-color: $main-color
+    position: absolute
+    z-index: 2
+    overflow: scroll
+    -webkit-overflow-scrolling: touch
+    max-height: 70vh
+    +medium-devices
+      max-height: 80vh
+    &.noscroll
+      overflow: hidden
     .menu-button
+      width: 100%
+      height: 100%
+      background-color: rgba(0,0,0,.2)
+      position: absolute
+      z-index: 3
+      display: flex
+      justify-content: center
+      align-items: center
+      cursor: pointer
       display: none
+      .chevron-down
+        transform: rotate(180deg)
+        transition: transform 300ms
+        background-color: $font-second-color
+        mask: url('/images/svg/chevron-down.svg') no-repeat 50% 50%
+        -webkit-mask: url('/images/svg/chevron-down.svg') no-repeat 50% 50%
+        -webkit-mask-size: cover
+        mask-size: cover
+        height: 45px
+        width: 54px
+        background-position: center
+        background-repeat: no-repeat
+        background-size: cover
     .main
+      display: flex
+      width: 100%
+      height: 100%
+      min-height: 300px
+      flex-direction: column
+      .content
+        min-height: 10px
+        margin: auto
+        width: 100%
+      .footer
+        display: table
+        margin: 10px auto
       .geocoder
-        display: block
+        display: none
+    +large-devices
+      width: 25%
+      height: 100vh
+      border-top: 0
+      overflow: scroll
+      border-right: 1px solid $border-color
+      .menu-button
+        display: none
+      .main
+        .geocoder
+          display: block
+  &.active
+    .empty-scroll
+      height: 20vh
+    .sidebar
+      height: calc(80vh + 1px)
+      overflow: scroll

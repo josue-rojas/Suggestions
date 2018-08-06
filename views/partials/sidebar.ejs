@@ -1,13 +1,28 @@
-<div class='empty-scroll'></div>
-<div class='sidebar'>
-  <div class='menu-button'>
-    <div class='chevron-down'></div>
-  </div>
-  <div class='main'>
-    <div class='content'>
-      <div id='geocoder' class='geocoder'></div>
+<div class='sidebar-wrapper'>
+  <div class='empty-scroll'></div>
+  <div class='sidebar noscroll'>
+    <div class='menu-button'>
+      <div class='chevron-down'></div>
     </div>
-    <%- include ./footer %>
+    <div class='main'>
+      <div class='content'>
+        <div id='geocoder' class='geocoder'></div>
+        <div class='suggestions'>
+          <%- include ./newsuggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+          <%- include ./suggestion %>
+        </div>
+      </div>
+      <%- include ./footer %>
+    </div>
   </div>
 </div>
 

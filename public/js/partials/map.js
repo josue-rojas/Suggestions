@@ -35,6 +35,12 @@ const geojson = {
     }]
 };
 
+ function setNewCoord(lng, lat){
+  geojson.features[0].geometry.coordinates = [lng, lat];
+  map.getSource('point').setData(geojson);
+  $('span.coordinates').text(`${lng}, ${lat}`);
+}
+
 /* given a query in the form "lng, lat" or "lat, lng" returns the matching
  * geographic coordinate(s) as search results in carmen geojson format,
  * https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
@@ -94,8 +100,7 @@ function onMove(e) {
 
   // Update the Point feature in `geojson` coordinates
   // and call setData to the source layer `point` on it.
-  geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
-  map.getSource('point').setData(geojson);
+  setNewCoord(coords.lng, coords.lat);
 }
 
 function onUp(e) {
@@ -109,17 +114,17 @@ function onUp(e) {
 // -------------------------------
 // events
 userlocation.on('geolocate', (pos)=>{
-  geojson.features[0].geometry.coordinates = [pos.coords.longitude, pos.coords.latitude];
-  map.getSource('point').setData(geojson);
+  setNewCoord(pos.coords.longitude, pos.coords.latitude);
 });
 
 geocoder.on('result', (r)=>{
-  geojson.features[0].geometry.coordinates = r.result.geometry.coordinates;
-  map.getSource('point').setData(geojson);
+  setNewCoord(r.result.geometry.coordinates[0],r.result.geometry.coordinates[1]);
 });
 
 map.on('load', ()=>{
   geojson['features'][0]['geometry']['coordinates'] = [map.getCenter().lng, map.getCenter().lat];
+  $('span.coordinates').text(`${map.getCenter().lng}, ${map.getCenter().lat}`);
+  // setNewCoord(map.getCenter().lng, map.getCenter().lat);
 
   // Add a single point to the map
   map.addSource('point', {

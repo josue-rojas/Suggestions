@@ -6,9 +6,14 @@
 @import '../sass/partials/sidebar.sass'
 @import '../sass/partials/suggestion.sass'
 @import '../sass/partials/newsuggestion.sass'
+@import '../sass/partials/newsuggestionform.sass'
 
 
 .view-wrapper
   min-width: 100vw
   min-height: 100vh
   position: relative
+  transition: filter 400ms
+  &.noscroll
+    overflow: hidden
+    filter: blur(5px)

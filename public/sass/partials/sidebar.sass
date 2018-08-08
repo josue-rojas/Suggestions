@@ -62,10 +62,13 @@ $border-color: rgba(31,31,31,.8)
         display: none
     +large-devices
       width: 25%
+      max-height: 100vh
       height: 100vh
       border-top: 0
       overflow: scroll
       border-right: 1px solid $border-color
+      &.noscroll
+        overflow: scroll
       .menu-button
         display: none
       .main

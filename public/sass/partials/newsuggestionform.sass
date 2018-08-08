@@ -1,0 +1,49 @@
+.suggestion-form
+  width: 100vw
+  height: 100vh
+  background-color: rgba(0,0,0,.5)
+  position: absolute
+  top: 0
+  left: 0
+  z-index: 10
+  display: flex
+  justify-content: center
+  align-items: center
+  .form-box
+    min-width: 200px
+    min-height: 100px
+    padding: 25px
+    background-color: $main-color
+    .top
+      display: flex
+      align-items: center
+      .title
+        font-size: 1.2rem
+        display: inline-block
+        text-align: center
+        width: 100%
+        min-width: 250px
+    .divider
+      width: 95%
+      margin: 7px auto
+      border-bottom: 1px solid $font-second-color
+  form
+    margin: 10px auto
+    label
+      margin-top: 7px
+      font-size: 1.2rem
+      display: block
+    input, button
+      width: 100%
+      min-height: 30px
+      margin-top: 0
+      outline: none
+      border: 1px solid #ddd
+    .form-button
+      cursor: pointer
+      margin: 20px auto 0 auto
+      display: block
+      transition: background-color 400ms
+      &:hover
+        background-color: $font-second-color
+        border: 1px solid $font-second-color

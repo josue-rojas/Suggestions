@@ -12,4 +12,4 @@ npm start
 TODO:
 - fix desktop sidebar, more specifically the footer and the search bar
 - in desktop new post should be 2 lines and numbers should be  where the numbers do not cause to change the height when moving it
--
+- better color scheme for both map, and other including inputs

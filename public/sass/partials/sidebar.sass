@@ -48,12 +48,11 @@ $border-color: rgba(31,31,31,.8)
     .main
       display: flex
       width: 100%
-      height: 100%
-      min-height: 300px
+      min-height: 30vh
       flex-direction: column
       .content
         min-height: 10px
-        margin: auto
+        margin-bottom: auto
         width: 100%
       .footer
         display: table
@@ -63,7 +62,7 @@ $border-color: rgba(31,31,31,.8)
     +large-devices
       width: 25%
       max-height: 100vh
-      height: 100vh
+      min-height: 100vh
       border-top: 0
       overflow: scroll
       border-right: 1px solid $border-color
@@ -72,8 +71,15 @@ $border-color: rgba(31,31,31,.8)
       .menu-button
         display: none
       .main
+        min-height: 100vh
+        padding: 10px
         .geocoder
-          display: block
+          display: flex
+          justify-content: space-around
+          align-items: center
+          .mapboxgl-ctrl-geocoder.mapboxgl-ctrl
+            width: calc(100% - 50px)
+            min-width: 0
   &.active
     .empty-scroll
       height: 20vh

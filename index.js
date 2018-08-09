@@ -14,14 +14,17 @@ const pool = new Pool({
   connectionString: connectionString,
 });
 
-
 pool.query('CREATE TABLE IF NOT EXISTS suggestions(id SERIAL UNIQUE PRIMARY KEY, expiration timestamptz, color VARCHAR(8), title VARCHAR(255), text VARCHAR(255), longitude DECIMAL, latitude DECIMAL)');
 
-//
 app.get('/', (req, res) => {
   res.render('pages/home');
 })
 
+app.get('/suggestions/:swlon/:swlat/:nelon/:nelat', (req, res)=>{
+  pool.query(`SELECT * FROM suggestions WHERE longitude BETWEEN ${req.params.swlon} and ${req.params.nelon} AND latitude BETWEEN ${req.params.swlat} and ${req.params.nelat}`)
+  .then((results)=> res.send(JSON.stringify(results.rows)))
+  .catch((err)=> res.status(500).send({ error: `Error: ${err}` }));
+});
 
 app.get('*', (req, res) => {
   res.redirect('/');

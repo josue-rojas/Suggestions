@@ -124,7 +124,41 @@ geocoder.on('result', (r)=>{
 map.on('load', ()=>{
   geojson['features'][0]['geometry']['coordinates'] = [map.getCenter().lng, map.getCenter().lat];
   $('span.coordinates').text(`${map.getCenter().lng}, ${map.getCenter().lat}`);
-  // setNewCoord(map.getCenter().lng, map.getCenter().lat);
+
+  // get long and lat and get request to get points for the map
+  const bounds = map.getBounds().toArray();
+  fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
+  .then(function(res){return res.json()})
+  .then((data)=>{
+    // for now just add points
+    // TODO: later make clusters
+    // const points = [];
+    data.forEach((e, i)=>{
+      map.addSource(`point${i}`, {
+        "type": "geojson",
+        data: {
+          "type": "FeatureCollection",
+          "features": [{
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [e.longitude,e.latitude]
+            }
+          }]
+        }
+      })
+      map.addLayer({
+        "id": `point${i}`,
+        "type": "circle",
+        "source": `point${i}`,
+        "paint": {
+            "circle-radius": 7,
+            "circle-color": e.color
+        }
+      });
+    });
+
+  });
 
   // Add a single point to the map
   map.addSource('point', {

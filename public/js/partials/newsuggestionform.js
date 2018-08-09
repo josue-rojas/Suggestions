@@ -17,10 +17,11 @@ $('.cancel-button, .suggestion-form').click(function(e){
 
 $('.submit-button').click((e)=>{
   // TODO: check form  or use onchange to check
-  // TODO add input for color,
   // TODO: add input for expiration (still need to figure to automate delete of expires)
   const title = $('#post-title').val();
   const text = $('#post-text').val();
+  const color = $('#color-chooser').val();
+
   const expiration = new Date();
   fetch('/newsuggestion', {
     method: 'POST',
@@ -30,7 +31,7 @@ $('.submit-button').click((e)=>{
     },
     body: JSON.stringify({
       expiration: expiration,
-      color: '#4286f4',
+      color: `#${color}`,
       title: title,
       text: text,
       latitude: geojson.features[0].geometry.coordinates[1],

@@ -9,6 +9,8 @@
       <input id='post-title' class='form-input' type='text' placeholder='Suggestion Title'>
       <label for='post-text' class='input-title'>Text</label>
       <input id='post-text' class='form-input' type='text' placeholder='New Suggestion'>
+      <label for='color-chooser' class='input-title'>Color</label>
+      <input id='color-chooser' class="jscolor color-chooser" name='hexcolor' value="FF5454">
       <button class='submit-button form-button' type='submit'>Submit</button>
       <button class='cancel-button form-button' type='submit'>Cancel</button>
     </form>
@@ -16,3 +18,6 @@
 
 </div>
 <script src='/js/partials/newsuggestionform.js'></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/js/partials/jscolor.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

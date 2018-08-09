@@ -35,11 +35,24 @@ const geojson = {
     }]
 };
 
- function setNewCoord(lng, lat){
+function setNewCoord(lng, lat){
   geojson.features[0].geometry.coordinates = [lng, lat];
   map.getSource('point').setData(geojson);
   $('span.coordinates').text(`${lng}, ${lat}`);
 }
+
+function addSuggestion(sug) {
+  $('.suggestions').append(
+    `
+      <div class='suggestion'>
+        <h4 class='title'>${sug.title}</h4>
+        <p class='location'>${sug.longitude}, ${sug.latitude}</p>
+        <p class='text'>${sug.text}</p>
+      </div>
+    `
+  )
+}
+
 
 /* given a query in the form "lng, lat" or "lat, lng" returns the matching
  * geographic coordinate(s) as search results in carmen geojson format,
@@ -156,8 +169,9 @@ map.on('load', ()=>{
             "circle-color": e.color
         }
       });
+      // addSuggestion is from suggestion partial
+      addSuggestion(e);
     });
-
   });
 
   // Add a single point to the map

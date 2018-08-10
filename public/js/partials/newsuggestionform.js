@@ -15,8 +15,8 @@ $('.cancel-button, .suggestion-form').click(function(e){
   }
 });
 
-$('.submit-button').click((e)=>{
-  // TODO: check form  or use onchange to check
+function submitForm(){
+  // TODO: check form  or use onchange to check before submitting
   // TODO: add input for expiration (still need to figure to automate delete of expires)
   const title = $('#post-title').val();
   const text = $('#post-text').val();
@@ -45,4 +45,15 @@ $('.submit-button').click((e)=>{
       $('.suggestion-form').slideUp();
     }
   });
+}
+
+$('.submit-button').click((e)=>{
+  submitForm();
+});
+
+$('.suggestion-form form input').keypress((e)=>{
+  if (e.which == 13) {
+    submitForm();
+    return false;    //<---- Add this line
+  }
 });

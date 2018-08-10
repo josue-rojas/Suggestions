@@ -4,7 +4,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoid2l0aGNoZWVzZXBscyIsImEiOiJjams1cTkybmcwamo5M
 // map objects initialize
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v9',
+  style: 'mapbox://styles/withcheesepls/cjkoe5a7w02042ro8em58c1aj',
   center: location.hash.length == 0 ? [-73.9395,40.79] : [],
   zoom: 10,
   hash: true
@@ -35,22 +35,84 @@ const geojson = {
     }]
 };
 
+let visible_points_state = {};
+
 function setNewCoord(lng, lat){
   geojson.features[0].geometry.coordinates = [lng, lat];
   map.getSource('point').setData(geojson);
   $('span.coordinates').text(`${lng}, ${lat}`);
 }
 
-function addSuggestion(sug) {
-  $('.suggestions').append(
-    `
-      <div class='suggestion'>
-        <h4 class='title'>${sug.title}</h4>
-        <p class='location'>${sug.longitude}, ${sug.latitude}</p>
-        <p class='text'>${sug.text}</p>
-      </div>
-    `
-  )
+function addSuggestion(sug, prevSugg) {
+  const suggestion = `
+    <div class='suggestion' id='point${sug.id}'>
+      <h4 class='title'>${sug.title}</h4>
+      <p class='location'>${sug.longitude}, ${sug.latitude}</p>
+      <p class='text'>${sug.text}</p>
+    </div>
+  `
+  // logic to keep the order (especially when expiration or time is added)
+  // TODO: make adding transition smoother for ui
+  const $previousElement = prevSugg === '' ? $('div.new-suggestion') : $(`#point${prevSugg}`);
+  if($previousElement.length === 0) $('div.suggestions').append(suggestion);
+  else $previousElement.after(suggestion);
+}
+
+function fetchPoints(bounds){
+  // TODO: so there should remove request that are not neccessary, for example if the new bounds is smaller than the old bounds (or old bounds square contains the new bounds) then it is not neccessary to fetch
+  fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
+  .then(function(res){return res.json()})
+  .then((data)=>{
+    // for now just add points
+    // TODO: later make clusters
+    let prevID = '';
+    let new_visible_state = {};
+    data.forEach((e, i)=>{
+      const point_id = `point${e.id}`;
+      new_visible_state[point_id] = true;
+      if(!(point_id in visible_points_state)){
+        map.addSource(point_id, {
+          "type": "geojson",
+          data: {
+            "type": "FeatureCollection",
+            "features": [{
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [e.longitude,e.latitude]
+              }
+            }]
+          }
+        });
+        map.addLayer({
+          "id": point_id,
+          "type": "circle",
+          "source": point_id,
+          "paint": {
+              "circle-radius": {
+                'base': 1,
+                'stops': [[7, 10], [15, 7]]
+              },
+              "circle-color": e.color,
+              "circle-opacity": .5,
+          }
+        });
+        // addSuggestion is from suggestion partial
+        addSuggestion(e, prevID);
+      }
+      else delete visible_points_state[point_id];
+      prevID = point_id
+    });
+    // after loop it should have deleted all that are visible from the previous state and all that is lef is the ones that are not visible so lets handle that
+    // TODO: delete transition should be smooth in ui
+    for(let key in visible_points_state){
+      map.removeLayer(key);
+      map.removeSource(key);
+      $(`#${key}`).remove();
+    }
+    // finally set the new fetch data as visible data
+    visible_points_state = new_visible_state;
+  });
 }
 
 
@@ -140,40 +202,7 @@ map.on('load', ()=>{
 
   // get long and lat and get request to get points for the map
   const bounds = map.getBounds().toArray();
-  fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
-  .then(function(res){return res.json()})
-  .then((data)=>{
-    // for now just add points
-    // TODO: later make clusters
-    // const points = [];
-    data.forEach((e, i)=>{
-      map.addSource(`point${i}`, {
-        "type": "geojson",
-        data: {
-          "type": "FeatureCollection",
-          "features": [{
-            "type": "Feature",
-            "geometry": {
-              "type": "Point",
-              "coordinates": [e.longitude,e.latitude]
-            }
-          }]
-        }
-      });
-      map.addLayer({
-        "id": `point${i}`,
-        "type": "circle",
-        "source": `point${i}`,
-        "paint": {
-            "circle-radius": 7,
-            "circle-color": e.color,
-            "circle-opacity": .5,
-        }
-      });
-      // addSuggestion is from suggestion partial
-      addSuggestion(e);
-    });
-  });
+  fetchPoints(bounds);
 
   // Add a single point to the map
   map.addSource('point', {
@@ -227,6 +256,11 @@ map.on('load', ()=>{
       map.on('touchmove', onMove);
       map.once('touchend', onUp);
   });
+});
+
+map.on('moveend',(data, error)=>{
+  const bounds = map.getBounds().toArray();
+  fetchPoints(bounds);
 });
 
 // this is added with the sidebar (it would be repetive if i add it here, cause the sidebar checks if it is the right one to use)

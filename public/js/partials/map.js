@@ -159,14 +159,15 @@ map.on('load', ()=>{
             }
           }]
         }
-      })
+      });
       map.addLayer({
         "id": `point${i}`,
         "type": "circle",
         "source": `point${i}`,
         "paint": {
             "circle-radius": 7,
-            "circle-color": e.color
+            "circle-color": e.color,
+            "circle-opacity": .5,
         }
       });
       // addSuggestion is from suggestion partial

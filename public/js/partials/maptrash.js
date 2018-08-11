@@ -1,3 +1,5 @@
+// this map uses one layer for the dots. i thought this would make it faster in safari but when draggin the point it still slow
+// the down side is that i cant control each dot individually so there cant be click (at least i havent figured it out yet)
 mapboxgl.accessToken = 'pk.eyJ1Ijoid2l0aGNoZWVzZXBscyIsImEiOiJjams1cTkybmcwamo5M3FwMm5jMjdzdHl3In0.yI9WNY7aCdeQndyxbU9Amg';
 
 // -------------------------------
@@ -35,8 +37,6 @@ const geojson = {
     }]
 };
 
-let canvas = map.getCanvasContainer();
-
 let visible_points_state = {};
 
 function setNewCoord(lng, lat){
@@ -47,7 +47,7 @@ function setNewCoord(lng, lat){
 
 function addSuggestion(sug, prevSugg) {
   const suggestion = `
-    <div class='suggestion' id='point${sug.id}' onclick='suggestionClick("point${sug.id}")'>
+    <div class='suggestion' id='point${sug.id}'>
       <h4 class='title'>${sug.title}</h4>
       <p class='location'>${sug.longitude}, ${sug.latitude}</p>
       <p class='text'>${sug.text}</p>
@@ -60,11 +60,7 @@ function addSuggestion(sug, prevSugg) {
   else $previousElement.after(suggestion);
 }
 
-function suggestionClick(id){
-  const point_source = map.getSource(id);
-  map.flyTo({center: point_source._data.features[0].geometry.coordinates});
-}
-
+let layerID = 0;
 function fetchPoints(bounds){
   // TODO: so there should remove request that are not neccessary, for example if the new bounds is smaller than the old bounds (or old bounds square contains the new bounds) then it is not neccessary to fetch
   fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
@@ -75,66 +71,52 @@ function fetchPoints(bounds){
     let prevID = '';
     let new_visible_state = {};
     // TODO make faster (i think https://www.mapbox.com/mapbox-gl-js/example/data-driven-lines/ this should help) instead of adding layers and sources just have one layer and source with multiple points
+    const pointsGEOJSON = [];
     data.forEach((e, i)=>{
       const point_id = `point${e.id}`;
+      pointsGEOJSON.push({
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [e.longitude,e.latitude]
+        },
+        "properties": {
+          "color": e.color
+        }
+      });
+      if(point_id in visible_points_state) delete visible_points_state[point_id];
+      addSuggestion(e, prevID);
+      prevID = point_id;
       new_visible_state[point_id] = true;
-      if(!(point_id in visible_points_state)){
-        map.addLayer({
-          "id": point_id,
-          "type": "circle",
-          "source": {
-            "type": "geojson",
-            data: {
-              "type": "FeatureCollection",
-              "features": [{
-                "type": "Feature",
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [e.longitude,e.latitude]
-                }
-              }]
-            }
-          },
-          "paint": {
-              "circle-radius": {
-                'base': 1,
-                'stops': [[7, 10], [15, 7]]
-              },
-              "circle-color": e.color,
-              "circle-opacity": .5,
-          }
-        });
-        map.on('mouseenter', point_id, ()=>{
-          map.setPaintProperty(point_id, 'circle-opacity', 1);
-          canvas.style.cursor = 'pointer';
-        });
-        map.on('mouseleave', point_id, ()=> {
-          map.setPaintProperty(point_id, 'circle-opacity', .5);
-          canvas.style.cursor = '';
-        });
-        map.on('click', point_id, (e)=>{
-          suggestionClick(point_id);
-        })
-        // addSuggestion is from suggestion partial
-        addSuggestion(e, prevID);
-      }
-      else delete visible_points_state[point_id];
-      prevID = point_id
     });
-    // after loop it should have deleted all that are visible from the previous state and all that is left is the ones that are not visible so lets handle that
+    // after loop it should have deleted all that are visible from the previous state and all that is lef is the ones that are not visible so lets handle that
     // TODO: delete transition should be smooth in ui
     for(let key in visible_points_state){
-      // console.log(map.removeLayer(key))
-      map.removeLayer(key);
-      map.removeSource(key);
-      map.off('mouseenter', key);
-      map.off('mouseleave', key);
-      map.off('click', key);
       $(`#${key}`).remove();
     }
+    map.addLayer({
+      "id": `points${layerID++}`,
+      "type": "circle",
+      "source": {
+        "type": "geojson",
+        "data": {
+          "type": "FeatureCollection",
+          "features": pointsGEOJSON
+        }
+      },
+      "paint": {
+        "circle-radius": {
+         'base': 1,
+         'stops': [[7, 10], [15, 7]]
+       },
+        "circle-color": ['get', 'color'],
+        "circle-opacity": .5,
+      }
+    })
     // finally set the new fetch data as visible data
     visible_points_state = new_visible_state;
   });
+  map.removeLayer(`points${layerID-1}`)
 }
 
 
@@ -187,6 +169,7 @@ var coordinatesGeocoder = function (query) {
 };
 
 // point
+let canvas = map.getCanvasContainer();
 
 function onMove(e) {
   var coords = e.lngLat;

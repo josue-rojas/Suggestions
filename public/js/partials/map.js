@@ -62,7 +62,7 @@ function addSuggestion(sug, prevSugg) {
 
 function suggestionClick(id){
   const point_source = map.getSource(id);
-  map.flyTo({center: point_source._data.features[0].geometry.coordinates});
+  map.flyTo({center: point_source._data.features[0].geometry.coordinates, zoom: 12});
 }
 
 function fetchPoints(bounds){
@@ -71,7 +71,7 @@ function fetchPoints(bounds){
   .then(function(res){return res.json()})
   .then((data)=>{
     // for now just add points
-    // TODO: later make clusters
+    // TODO: later make clusters, maybe (not sure yet)
     let prevID = '';
     let new_visible_state = {};
     // TODO make faster (i think https://www.mapbox.com/mapbox-gl-js/example/data-driven-lines/ this should help) instead of adding layers and sources just have one layer and source with multiple points

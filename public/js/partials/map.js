@@ -37,6 +37,7 @@ const geojson = {
 
 let canvas = map.getCanvasContainer();
 
+// keep track of which points are shown
 let visible_points_state = {};
 
 function setNewCoord(lng, lat){
@@ -47,10 +48,16 @@ function setNewCoord(lng, lat){
 
 function addSuggestion(sug, prevSugg) {
   const suggestion = `
-    <div class='suggestion' id='point${sug.id}' onclick='suggestionClick("point${sug.id}")'>
-      <h4 class='title'>${sug.title}</h4>
-      <p class='location'>${sug.longitude}, ${sug.latitude}</p>
-      <p class='text'>${sug.text}</p>
+    <div class='suggestion' id='point${sug.id}'
+      onclick='suggestionClick("point${sug.id}")'
+      onmouseover='suggestionHover("point${sug.id}")'
+      onmouseleave='suggestionLeave("point${sug.id}")'>
+      <div class='color-block' style='background-color: ${sug.color}'></div>
+      <div class='info-wrapper'>
+        <h4 class='title'> ${sug.title} </h4>
+        <p class='location'>${sug.longitude}, ${sug.latitude}</p>
+        <p class='text'>${sug.text}</p>
+      </div>
     </div>
   `
   // logic to keep the order (especially when expiration or time is added)
@@ -63,6 +70,13 @@ function addSuggestion(sug, prevSugg) {
 function suggestionClick(id){
   const point_source = map.getSource(id);
   map.flyTo({center: point_source._data.features[0].geometry.coordinates, zoom: 12});
+}
+
+function suggestionHover(id){
+  map.setPaintProperty(id, 'circle-opacity', 1);
+}
+function suggestionLeave(id){
+  map.setPaintProperty(id, 'circle-opacity', .4);
 }
 
 function fetchPoints(bounds){
@@ -101,7 +115,7 @@ function fetchPoints(bounds){
                 'stops': [[7, 10], [15, 7]]
               },
               "circle-color": e.color,
-              "circle-opacity": .5,
+              "circle-opacity": .4,
           }
         });
         map.on('mouseenter', point_id, ()=>{

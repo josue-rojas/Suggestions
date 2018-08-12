@@ -15,9 +15,55 @@ $('.cancel-button, .suggestion-form').click(function(e){
   }
 });
 
+// object containing input checks corresponding to their id
+const checkinput = {
+  'post-title': (val)=> {return val.length > 0 && val.length < 256},
+  'post-text': (val)=> {return val.length > 0 && val.length < 256},
+  'color-chooser': (val)=> {
+    $temp = $('<div>');
+    $temp.css('color', `#${val}`);
+    return $temp.css('color') !== '';
+  },
+};
+// keep track of input validation (they all start at false)
+let inputState = {
+  'post-title': false,
+  'post-text': false,
+  'color-chooser': false
+};
+
+function checkValid($target){
+  if(checkinput[$target.attr('id')]($target.val())){
+    inputState[$target.attr('id')] = true;
+    $target.removeClass('invalid');
+    return true
+  }
+  else{
+    inputState[$target.attr('id')] = false;
+    $target.addClass('invalid');
+    return false
+  }
+}
+
+$('.suggestion-form form input').keyup(function(e){
+  const $e = $(e.target);
+  checkValid($e);
+});
+// color-chooser may change with the colorbox instead of typing
+$('.suggestion-form form input#color-chooser').change(function(e){
+  const $e = $(e.target);
+  checkValid($e);
+});
+
 function submitForm(){
-  // TODO: check form  or use onchange to check before submitting
   // TODO: add input for expiration (still need to figure to automate delete of expires)
+  let hasInvalid = 0;
+  for(let e in inputState){
+    hasInvalid+= checkValid($(`#${e}`)) ? 0 : 1;
+  }
+
+  if(hasInvalid !== 0) return false;
+
   const title = $('#post-title').val();
   const text = $('#post-text').val();
   const color = $('#color-chooser').val();
@@ -43,6 +89,7 @@ function submitForm(){
       // ummmm.... for now close
       $('.view-wrapper').removeClass('noscroll');
       $('.suggestion-form').slideUp();
+      // TODO: should add point (not refresh since we already know the point info)
     }
   });
 }

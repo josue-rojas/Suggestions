@@ -13,7 +13,6 @@ const map = new mapboxgl.Map({
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   localGeocoder: coordinatesGeocoder,
-  zoom: 4,
   placeholder: 'Search',
 });
 
@@ -138,7 +137,6 @@ function fetchPoints(bounds){
     // after loop it should have deleted all that are visible from the previous state and all that is left is the ones that are not visible so lets handle that
     // TODO: delete transition should be smooth in ui
     for(let key in visible_points_state){
-      // console.log(map.removeLayer(key))
       map.removeLayer(key);
       map.removeSource(key);
       map.off('mouseenter', key);
@@ -214,8 +212,6 @@ function onMove(e) {
 }
 
 function onUp(e) {
-  var coords = e.lngLat;
-
   // Unbind mouse/touch events
   map.off('mousemove', onMove);
   map.off('touchmove', onMove);

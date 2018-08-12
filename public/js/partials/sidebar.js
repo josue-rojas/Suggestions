@@ -35,5 +35,4 @@ $window.resize(()=>{
 // document ready stuff
 $(document).ready(()=>{
   addGeocoder($window.width());
-
 })

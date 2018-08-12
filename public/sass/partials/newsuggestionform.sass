@@ -41,14 +41,23 @@
       margin-top: 0
       outline: none
       font-size: 16px
+      transition: color 300ms, border-color 300ms
       &:not(#color-chooser, .form-button)
         background-color: rgba(0,0,0,0)
         color: $font-main-color
         border: 1px solid #ddd
         &:focus
+          color: rgb(164, 240, 255)
           border: 1px solid rgb(164, 240, 255)
-    #color-chooser
-      border: 0
+      &#color-chooser
+        border: 1px solid rgba(0,0,0,0)
+        &.invalid
+          border: 1px solid #ff6e6e
+          color: #ff6e6e !important
+          background-color: rgba(0,0,0,0) !important
+      &.invalid
+        border: 1px solid #ff6e6e
+        color: #ff6e6e
     .form-button
       cursor: pointer
       margin: 20px auto 0 auto

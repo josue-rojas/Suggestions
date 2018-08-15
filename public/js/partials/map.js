@@ -34,6 +34,11 @@ const geojson = {
     }]
 };
 
+// marker is for custom animation instead of a normal circle
+let markerDIV = document.createElement('div');
+markerDIV.className = 'marker marker-draggable';
+const marker = new mapboxgl.Marker(markerDIV)
+
 let canvas = map.getCanvasContainer();
 
 // keep track of which points are shown
@@ -43,6 +48,7 @@ function setNewCoord(lng, lat){
   geojson.features[0].geometry.coordinates = [lng, lat];
   map.getSource('point').setData(geojson);
   $('span.coordinates').text(`${lng}, ${lat}`);
+  marker.setLngLat(geojson.features[0].geometry.coordinates)
 }
 
 function addSuggestion(sug, prevSugg) {
@@ -202,10 +208,8 @@ var coordinatesGeocoder = function (query) {
 
 function onMove(e) {
   var coords = e.lngLat;
-
   // Set a UI indicator for dragging.
   canvas.style.cursor = 'grabbing';
-
   // Update the Point feature in `geojson` coordinates
   // and call setData to the source layer `point` on it.
   setNewCoord(coords.lng, coords.lat);
@@ -246,10 +250,13 @@ map.on('load', ()=>{
     "type": "circle",
     "source": "point",
     "paint": {
-        "circle-radius": 10,
-        "circle-color": "#3887be"
+        "circle-radius": 7.5,
+        "circle-opacity": 0
     }
   });
+
+  marker.setLngLat(geojson.features[0].geometry.coordinates)
+  marker.addTo(map);
 
   // When the cursor enters a feature in the point layer, prepare for dragging.
   map.on('mouseenter', 'point', ()=>{
@@ -293,6 +300,14 @@ map.on('moveend',(data, error)=>{
   const bounds = map.getBounds().toArray();
   fetchPoints(bounds);
 });
+
+// TODO need to change marker style when userlocation end
+// this might be a bit hard since the event is trigger when the map is moved but still leaves the userlocation
+// i was thinking of added two checks and keep track if it still is active.
+// the first is if the map is drag and the user is active it did not end
+// this will cause the location button to be clicked twice to end
+// if it is not drag and the button is clicked it will end and remove the pulse point
+// ANOTHER method is to have an event listener for changes on the div on the map that holds the pulse point for location
 
 // this is added with the sidebar (it would be repetive if i add it here, cause the sidebar checks if it is the right one to use)
 // map.addControl(geocoder);

@@ -14,6 +14,8 @@ $window.scroll((e)=>{
 
 // -------------------------------
 // add or remove geocoder when resized or is small screen
+// TODO: there is a bug when changing size and tracking is active it will leave the tracker on and show the tracker button as off
+// TODO: also we shouldnt empty and if the size changes but is still the same range (this is trouble when devices support rotating which changes size)
 function addGeocoder(windowWidth){
   if(windowWidth < 992){
     $('.mapboxgl-ctrl-top-right').empty();

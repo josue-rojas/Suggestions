@@ -310,5 +310,5 @@ map.on('moveend',(data, error)=>{
 // ANOTHER method is to have an event listener for changes on the div on the map that holds the pulse point for location
 
 // this is added with the sidebar (it would be repetive if i add it here, cause the sidebar checks if it is the right one to use)
-// map.addControl(geocoder);
-// map.addControl(userlocation);
+map.addControl(geocoder);
+map.addControl(userlocation);

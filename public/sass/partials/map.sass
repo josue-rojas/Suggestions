@@ -4,6 +4,31 @@
   min-height: 70vh
   position: fixed
   top: 0
+  .marker
+    width: 15px
+    height: 15px
+    background-color: $main-dot-color
+    border-radius: 100%
+    position: relative
+    display: flex
+    justify-content: center
+    align-items: center
+    &::before
+      content: ""
+      display: block
+      position: absolute
+      width: 0%
+      height: 0%
+      border-radius: 100%
+      background-color: $pulse-dot-color
+      opacity: 1
+      animation: pulse 1s linear infinite
+  .mapboxgl-user-location-dot.mapboxgl-marker.mapboxgl-marker-anchor-center
+    background-color: $lock-dot-color
+    &::before
+      background-color: $lock-dot-color
+    &::after
+      border: 0
   .mapboxgl-ctrl-top-right
     right: auto !important
     left: calc(50% - 145px)
@@ -23,3 +48,13 @@
 
 .mapboxgl-ctrl-top-right input, .geocoder input
   font-size: 16px !important
+
++keyframes(pulse)
+  0%
+    height: 0
+    width: 0
+    opacity: 1
+  100%
+    opacity: 0
+    width: 250%
+    height: 250%

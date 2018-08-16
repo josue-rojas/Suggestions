@@ -1,27 +1,42 @@
 .new-suggestion
   border-bottom: 1px solid $line-color
-  padding: 25px 7px
+  padding: 15px 7px
   font-size: 1.1rem
   letter-spacing: .02rem
   display: flex
   align-items: center
   cursor: pointer
   .new-icon
+    width: 10px
+    height: 10px
+    background-color: $main-dot-color
+    border-radius: 100%
+    position: relative
     display: flex
     justify-content: center
     align-items: center
-    width: 25px
-    height: 25px
-    position: relative
-    margin-right: 7px
-    .line
-      background-color: $font-second-color
+    margin-right: 12.5px
+    &::before
+      content: ""
+      display: block
       position: absolute
-      width: 5px
-      height: 100%
-      &.s-line
-        transform: rotate(90deg)
+      width: 0%
+      height: 0%
+      border-radius: 100%
+      background-color: $pulse-dot-color
+      opacity: 1
+      animation: pulse 1s linear infinite
   .text
+    max-width: calc(100% - 26px)
+    white-space: wrap
+    word-wrap: break-word
     display: inline-block
+    transition: color 300ms
     .coordinates
+      transition: color 300ms
       color: $font-second-color
+  &:hover
+    .text
+      color: #d2d0d0
+      .coordinates
+        color: $font-main-color

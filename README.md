@@ -15,10 +15,8 @@ npm start
 TODO:
 - in desktop new post should be 2 lines and numbers should be  where the numbers do not cause to change the height when moving it
 - better color scheme for both map, and other including inputs
-- make obvious hover new suggestion
-- when user location is active change color of main point to signal it is locked and cannot be moved, if not change it back.
-- animate the main point to highlight this is the main one. (pulse animation)
 - highlight a suggestion when one is clicked
 - make an about page (or information about this)
 - make build option for production; this way sass is not used and everything is minified such as js and css
 - (there are more scattered in if you search [TODO](https://github.com/josuerojasrojas/Suggestions/search?q=TODO&unscoped_q=TODO) they should pop out)
+- there is a bug were submit is clicked many times making multiple post. (easy peasy fix)

@@ -84,8 +84,10 @@ function suggestionLeave(id){
   map.setPaintProperty(id, 'circle-opacity', .4);
 }
 
+let prevBounds = [];
 function fetchPoints(bounds){
-  // TODO: so there should remove request that are not neccessary, for example if the new bounds is smaller than the old bounds (or old bounds square contains the new bounds) then it is not neccessary to fetch
+  if(prevBounds.length > 0 && (bounds[0][0] >= prevBounds[0][0] && bounds[0][1] >= prevBounds[0][1] && bounds[1][0] <= prevBounds[1][0] && bounds[1][1] <= prevBounds[1][1])) return ;
+  // TODO: remove the ones that are not visible when zooming in
   fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
   .then(function(res){return res.json()})
   .then((data)=>{
@@ -93,7 +95,7 @@ function fetchPoints(bounds){
     // TODO: later make clusters, maybe (not sure yet)
     let prevID = '';
     let new_visible_state = {};
-    // TODO make faster (i think https://www.mapbox.com/mapbox-gl-js/example/data-driven-lines/ this should help) instead of adding layers and sources just have one layer and source with multiple points
+    // TODO make faster (i think https://www.mapbox.com/mapbox-gl-js/example/data-driven-lines/ this should help) instead of adding layers and sources just have one layer and source with multiple points (note: this might still need fix if more points prove to be a burden, but as of now the use of a marker renders and drags much quicker than the regular point)
     data.forEach((e, i)=>{
       const point_id = `point${e.id}`;
       new_visible_state[point_id] = true;
@@ -238,6 +240,7 @@ map.on('load', ()=>{
   // get long and lat and get request to get points for the map
   const bounds = map.getBounds().toArray();
   fetchPoints(bounds);
+  prevBounds = bounds;
 
   // Add a single point to the map
   map.addSource('point', {
@@ -299,6 +302,7 @@ map.on('load', ()=>{
 map.on('moveend',(data, error)=>{
   const bounds = map.getBounds().toArray();
   fetchPoints(bounds);
+  prevBounds = bounds;
 });
 
 // TODO need to change marker style when userlocation end
@@ -309,6 +313,5 @@ map.on('moveend',(data, error)=>{
 // if it is not drag and the button is clicked it will end and remove the pulse point
 // ANOTHER method is to have an event listener for changes on the div on the map that holds the pulse point for location
 
-// this is added with the sidebar (it would be repetive if i add it here, cause the sidebar checks if it is the right one to use)
-// map.addControl(geocoder);
-// map.addControl(userlocation);
+map.addControl(geocoder);
+map.addControl(userlocation);

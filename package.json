@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-css": "node-sass-chokidar --include-path ./node_modules ./public/css -o ./public/css",
-    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules ./public/css -o ./public/css --watch --recursive",
+    "build-css": "node-sass-chokidar --include-path ./node_modules ./public/css -o ./public/css --output-style compressed",
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules ./public/css -o ./public/css --watch --recursive --output-style compressed",
     "start-js": "node ./index.js",
-    "start": "npm-run-all -p watch-css start-js"
+    "start": "npm-run-all -p watch-css start-js",
+    "start-heroku": "npm run build-css; npm run start-js"
   },
   "repository": {
     "type": "git",

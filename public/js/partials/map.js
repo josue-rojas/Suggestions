@@ -87,7 +87,7 @@ function suggestionLeave(id){
 let prevBounds = [];
 function fetchPoints(bounds){
   if(prevBounds.length > 0 && (bounds[0][0] >= prevBounds[0][0] && bounds[0][1] >= prevBounds[0][1] && bounds[1][0] <= prevBounds[1][0] && bounds[1][1] <= prevBounds[1][1])) return ;
-  // TODO: remove the ones that are not visible when zooming in 
+  // TODO: remove the ones that are not visible when zooming in
   fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
   .then(function(res){return res.json()})
   .then((data)=>{
@@ -313,6 +313,5 @@ map.on('moveend',(data, error)=>{
 // if it is not drag and the button is clicked it will end and remove the pulse point
 // ANOTHER method is to have an event listener for changes on the div on the map that holds the pulse point for location
 
-// this is added with the sidebar (it would be repetive if i add it here, cause the sidebar checks if it is the right one to use)
 map.addControl(geocoder);
 map.addControl(userlocation);

@@ -86,8 +86,9 @@ function suggestionLeave(id){
 
 let prevBounds = [];
 function fetchPoints(bounds){
-  if(prevBounds.length > 0 && (bounds[0][0] >= prevBounds[0][0] && bounds[0][1] >= prevBounds[0][1] && bounds[1][0] <= prevBounds[1][0] && bounds[1][1] <= prevBounds[1][1])) return ;
   // TODO: remove the ones that are not visible when zooming in
+  // will uncomment when the top todo is done. also there might be an issue when turning the map around so need different approach
+  // if(prevBounds.length > 0 && (bounds[0][0] >= prevBounds[0][0] && bounds[0][1] >= prevBounds[0][1] && bounds[1][0] <= prevBounds[1][0] && bounds[1][1] <= prevBounds[1][1])) return ;
   fetch(`/suggestions/${bounds[0][0]}/${bounds[0][1]}/${bounds[1][0]}/${bounds[1][1]}`)
   .then(function(res){return res.json()})
   .then((data)=>{

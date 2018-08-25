@@ -127,10 +127,12 @@ function fetchPoints(bounds){
           }
         });
         map.on('mouseenter', point_id, ()=>{
+          $(`#${point_id}`).addClass('hover');
           map.setPaintProperty(point_id, 'circle-opacity', 1);
           canvas.style.cursor = 'pointer';
         });
         map.on('mouseleave', point_id, ()=> {
+          $('.hover').removeClass('hover');
           map.setPaintProperty(point_id, 'circle-opacity', .5);
           canvas.style.cursor = '';
         });

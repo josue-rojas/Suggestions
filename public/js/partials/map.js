@@ -168,9 +168,7 @@ function fetchPoints(bounds){
 var coordinatesGeocoder = function (query) {
     // match anything which looks like a decimal degrees coordinate pair
     let matches = query.match(/^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i);
-    if (!matches) {
-        return null;
-    }
+    if (!matches) return null;
 
     function coordinateFeature(lng, lat) {
         return {
